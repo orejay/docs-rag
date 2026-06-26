@@ -10,7 +10,6 @@ export async function chat(system: string, user: string) {
     system,
     messages: [{ role: 'user', content: user }],
   });
-  console.log(message);
   const block = message.content[0];
 
   return block.type === 'text' ? block.text : '';
