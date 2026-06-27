@@ -12,14 +12,31 @@ export class Ingestor {
   private splitTextIntoChunks(
     text: string,
     chunkSize = 500,
-    overlap = 50,
+    overlap = 1,
   ): string[] {
+    const sentences = text.match(/[^.!?]+[.!?]+|\s*\S+\s*$/g) ?? [];
     const chunks: string[] = [];
-    for (let start = 0; start < text.length; start += chunkSize - overlap) {
-      chunks.push(text.slice(start, start + chunkSize).trim());
+    let currentChunk: string[] = [];
+    let length = 0;
+
+    for (const sentence of sentences) {
+      const s = sentence.trim();
+      if (!s) continue;
+
+      if (length + s.length > chunkSize && currentChunk.length > 0) {
+        chunks.push(currentChunk.join(' '));
+        currentChunk = currentChunk.slice(-overlap);
+        length = currentChunk.join(' ').length;
+      }
+      currentChunk.push(s);
+      length += s.length;
     }
 
-    return chunks.filter((chunk) => chunk.length > 0);
+    if (currentChunk.length > 0) {
+      chunks.push(currentChunk.join(' '));
+    }
+
+    return chunks;
   }
 
   async ingestDirectory(dir: string): Promise<void> {
