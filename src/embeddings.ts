@@ -1,5 +1,5 @@
 import { pipeline } from '@huggingface/transformers';
-import { config } from './config';
+import { config } from './config/config';
 import { normalize } from 'node:path';
 
 export class Embedder {

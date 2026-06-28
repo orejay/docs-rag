@@ -2,7 +2,7 @@ import { z } from 'zod';
 import { chat } from './llm';
 import { Embedder } from './embeddings';
 import { ChunkRepository } from './db/chunkRepository';
-import { config } from './config';
+import { config } from './config/config';
 
 const AnswerSchema = z.object({
   answer: z.string(),
@@ -25,8 +25,7 @@ export class Agent {
 
   async ask(question: string): Promise<Answer> {
     const [queryVector] = await this.embedder.embed([question]);
-    const hits = await this.chunkRepository.hybridSearch(
-      question,
+    const hits = await this.chunkRepository.nearestChunks(
       queryVector,
       config.maxContextChunks,
     );

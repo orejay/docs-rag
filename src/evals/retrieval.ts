@@ -2,7 +2,7 @@ import { readFile } from 'node:fs/promises';
 import { Embedder } from '../embeddings';
 import { ChunkRepository } from '../db/chunkRepository';
 import { closePool } from '../db/pool';
-import { config } from '../config';
+import { config } from '../config/config';
 
 type Case = { question: string; expect: string | null };
 

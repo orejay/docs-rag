@@ -1,5 +1,5 @@
 import Anthropic from '@anthropic-ai/sdk';
-import { config } from './config';
+import { config } from './config/config';
 
 const client = new Anthropic();
 
