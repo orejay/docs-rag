@@ -17,8 +17,8 @@ async function main() {
   if (command === 'ask') {
     const agent = new Agent(embedder, chunkRepository);
     const question = args.join(' ');
-    const answer = await agent.ask(question);
-    console.log(JSON.stringify(answer, null, 2));
+    const { answer, context } = await agent.ask(question);
+    console.log(JSON.stringify({ answer, context }, null, 2));
   } else {
     console.log('Usage: node index.js <command> [args]');
     console.log('Commands:');

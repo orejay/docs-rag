@@ -3,6 +3,7 @@ import { Embedder } from '../embeddings';
 import { ChunkRepository } from '../db/chunkRepository';
 import { closePool } from '../db/pool';
 import { Agent } from '../agent';
+import { judgeFaithfulness } from '../judge';
 
 type Case = { question: string; expect: string | null };
 
@@ -18,21 +19,29 @@ async function main() {
   let passed = 0;
 
   for (const { question, expect } of cases) {
-    const result = await agent.ask(question);
+    const { answer: result, context } = await agent.ask(question);
 
     let pass: boolean;
 
     if (expect === null) {
       pass = !result.confident;
-    } else {
-      pass =
-        result.answer.toLowerCase().includes(expect.toLowerCase()) &&
-        result.confident;
+      console.log(
+        `${pass ? 'PASS' : 'FAIL'} [confident=${result.confident}]: "Question: ${question}"`,
+      );
+      if (pass) passed++;
+      continue;
     }
+    const hasFact =
+      result.answer.toLowerCase().includes(expect.toLowerCase()) &&
+      result.confident;
+    const verdict = await judgeFaithfulness(question, context, result.answer);
+
+    pass = hasFact && verdict.faithful;
 
     console.log(
-      `${pass ? 'PASS' : 'FAIL'} [confident=${result.confident}]: "Question: ${question}"`,
+      `${pass ? 'PASS' : 'FAIL'} [confident=${result.confident}, faithful=${verdict.faithful}]: "Question: ${question}"`,
     );
+    if (!verdict.faithful) console.log(`  Reason: ${verdict.reason}`);
     if (pass) {
       passed++;
     }

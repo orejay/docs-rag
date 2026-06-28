@@ -23,7 +23,7 @@ export class Agent {
     private chunkRepository: ChunkRepository,
   ) {}
 
-  async ask(question: string): Promise<Answer> {
+  async ask(question: string): Promise<{ answer: Answer; context: string }> {
     const [queryVector] = await this.embedder.embed([question]);
     const hits = await this.chunkRepository.nearestChunks(
       queryVector,
@@ -39,6 +39,6 @@ export class Agent {
       `Question: ${question}\n\nContext:\n${context}`,
     );
     const parsed = JSON.parse(raw.replace(/```json|```/g, '').trim());
-    return AnswerSchema.parse(parsed);
+    return { answer: AnswerSchema.parse(parsed), context };
   }
 }
