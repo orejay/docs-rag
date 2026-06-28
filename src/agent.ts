@@ -25,12 +25,13 @@ export class Agent {
 
   async ask(question: string): Promise<Answer> {
     const [queryVector] = await this.embedder.embed([question]);
-    const nearestChunks = await this.chunkRepository.nearestChunks(
+    const hits = await this.chunkRepository.hybridSearch(
+      question,
       queryVector,
       config.maxContextChunks,
     );
 
-    const context = nearestChunks
+    const context = hits
       .map((chunk, i) => `[${i + 1}] Source: ${chunk.source}\n${chunk.content}`)
       .join('\n\n');
 

@@ -23,3 +23,7 @@ Our support team is available Monday to Friday, 9am to 5pm. We are closed on pub
 ## Loyalty Program
 
 Members earn one point for every dollar spent. Points expire 12 months after they are earned. 100 points can be redeemed for a 5 dollar credit. Membership is free and automatic for registered customers.
+
+## Order Tracking
+
+Order codes use the format NW-XXXX. Code NW-4471 refers to standard domestic deliveries. Code NW-4472 refers to express deliveries. Code NW-4473 refers to international partner shipments.
